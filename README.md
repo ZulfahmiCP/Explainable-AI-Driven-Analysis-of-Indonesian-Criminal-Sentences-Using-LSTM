@@ -6,13 +6,15 @@
 ![License](https://img.shields.io/badge/License-MIT-green)
 
 ## Executive Summary
-This app is an end-to-end Machine Learning pipeline designed to analyze unstructured Indonesian criminal court decisions (*Putusan Pidana*). By leveraging **Bi-Directional LSTMs** and **Feature Injection techniques**, the system predicts imprisonment duration based on case narratives.
 
-Critically, this project integrates **Explainable AI (LIME)** to ensure transparency, allowing legal practitioners to visualize which specific words (e.g., *residivis*, *sopan*) influenced the model's prediction. This project serves as a foundational step towards building Trustworthy AI in the legal tech domain.
+This app is an end-to-end Machine Learning pipeline designed to analyze unstructured Indonesian criminal court decisions (_Putusan Pidana_). By leveraging **Bi-Directional LSTMs** and **Feature Injection techniques**, the system predicts imprisonment duration based on case narratives.
+
+Critically, this project integrates **Explainable AI (LIME)** to ensure transparency, allowing legal practitioners to visualize which specific words (e.g., _residivis_, _sopan_) influenced the model's prediction. This project serves as a foundational step towards building Trustworthy AI in the legal tech domain.
 
 ---
 
 ## Business Context & Problem Statement
+
 The Supreme Court of Indonesia processes approximately **100,000 new documents monthly**. Legal practitioners and judicial researchers face a significant "Information Overload" bottleneck. Analyzing consistency in sentencing across thousands of PDF documents is computationally expensive and prone to human error.
 
 **Objective:**
@@ -20,33 +22,39 @@ To build a **Data-Centric AI solution** that automates the extraction of legal r
 
 ---
 
-## 🛠️ Technical Architecture
+## Technical Architecture
 
 ### 1. Data Pipeline & Robust Preprocessing
-*Relevance: Data Validation & Quality Assurance*
+
+_Relevance: Data Validation & Quality Assurance_
 
 The raw data consists of PDF documents containing OCR artifacts, watermarks, and inconsistent formatting. A rigorous cleaning pipeline was implemented to ensure data quality:
-* **Noise Removal:** Regex-based removal of "phantom characters" (e.g., watermark *maa maa*), headers, and footers.
-* **Entity Extraction:** Automated extraction of key legal entities:
-    * *Articles Charged* (Pasal)
-    * *Prosecutor's Demand* (Tuntutan)
-    * *Mitigating & Aggravating Factors* (Hal Meringankan/Memberatkan)
-* **Feature Injection:** These extracted entities are concatenated with the case narrative to strictly guide the model's attention mechanism.
+
+- **Noise Removal:** Regex-based removal of "phantom characters" (e.g., watermark _maa maa_), headers, and footers.
+- **Entity Extraction:** Automated extraction of key legal entities:
+  - _Articles Charged_ (Pasal)
+  - _Prosecutor's Demand_ (Tuntutan)
+  - _Mitigating & Aggravating Factors_ (Hal Meringankan/Memberatkan)
+- **Feature Injection:** These extracted entities are concatenated with the case narrative to strictly guide the model's attention mechanism.
 
 ### 2. Modeling Strategy (Bi-LSTM)
+
 While Large Language Models (LLMs) are the current state-of-the-art, this project utilizes a **Bi-Directional LSTM** to establish a highly efficient, low-latency baseline.
-* **Embedding Layer:** Learned dense vector representations of legal terminology.
-* **Bi-Directional Wrapper:** Captures sequential context from both past and future tokens, essential for understanding legal negation (e.g., *"Terdakwa **tidak** terbukti..."*).
-* **Regression Output:** Predicts a continuous value (months of imprisonment).
+
+- **Embedding Layer:** Learned dense vector representations of legal terminology.
+- **Bi-Directional Wrapper:** Captures sequential context from both past and future tokens, essential for understanding legal negation (e.g., _"Terdakwa **tidak** terbukti..."_).
+- **Regression Output:** Predicts a continuous value (months of imprisonment).
 
 ### 3. Explainability (XAI)
+
 To address the "Black Box" nature of Neural Networks in high-stakes domains, **LIME (Local Interpretable Model-agnostic Explanations)** is implemented.
-* **Green Highlights:** Words increasing the sentence duration.
-* **Red Highlights:** Words decreasing the sentence duration.
+
+- **Green Highlights:** Words increasing the sentence duration.
+- **Red Highlights:** Words decreasing the sentence duration.
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```text
 ├── app.py                   # Main Streamlit application
@@ -61,3 +69,48 @@ To address the "Black Box" nature of Neural Networks in high-stakes domains, **L
 ├── data/
 │   └── sample_cases/        # Sample PDF documents for testing
 └── README.md                # Project documentation
+```
+
+---
+
+## Installation & Usage
+
+This project includes a **Streamlit Dashboard** for real-time inference.
+
+### Prerequisites
+
+- Python 3.8+
+- TensorFlow
+- Streamlit
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/ZulfahmiCP/Explainable-AI-Driven-Analysis-of-Indonesian-Criminal-Sentences-Using-LSTM.git
+```
+
+### Step 2: Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### Step 3: Run the Application
+
+Ensure the model file (`.h5`) and tokenizer (`.pickle`) are in the root directory (or update the path in `app.py`).
+
+```bash
+streamlit run app.py
+```
+
+The application will launch in your default browser at `http://localhost:8501`.
+
+---
+
+## Author
+
+**ZULFAHMI** Aspiring Data Scientist | Focus on NLP & AI Infrastructure
+
+https://www.linkedin.com/in/zul-fahmi-75b37828b/ | https://zulfahmi-portfolio.vercel.app/
+
+_Disclaimer: This project is for educational and research purposes. The predictions generated by the model should not be interpreted as professional legal advice._
